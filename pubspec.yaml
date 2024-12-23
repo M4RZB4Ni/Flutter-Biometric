@@ -1,13 +1,16 @@
 name: biometric
 description: A biometric service provider module.
-version: 1.0.0
+version: 1.0.0+2
 publish_to: none
 
 environment:
   sdk: ^3.4.1
 
 dependencies:
+  flutter:
+    sdk: flutter
   local_auth: ^2.3.0
+  local_auth_darwin: ^1.4.2
   flutter_secure_storage: ^9.2.2
 
 dev_dependencies:

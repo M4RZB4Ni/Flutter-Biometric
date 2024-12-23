@@ -10,6 +10,11 @@ class BiometricAuthProvider {
     String? reasonMessage,
     bool? biometricOnly,
     bool? stickyAuth,
+    String? lockOut,
+    String? goToSettingsButtonText,
+    String? goToSettingsDescription,
+    String? cancelButtonText,
+    String? localizedFallbackTitle,
   }) {
     _biometricAuthManager = BiometricAuthManager(
       stickyAuth: stickyAuth,
@@ -17,6 +22,11 @@ class BiometricAuthProvider {
       localAuth: localAuth,
       secureStorage: secureStorage,
       reasonMessage: reasonMessage,
+      cancelButtonText: cancelButtonText,
+      goToSettingsButtonText: goToSettingsButtonText,
+      goToSettingsDescription: goToSettingsDescription,
+      localizedFallbackTitle: localizedFallbackTitle,
+      lockOut: lockOut,
     );
   }
 

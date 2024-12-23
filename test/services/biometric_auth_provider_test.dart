@@ -17,6 +17,11 @@ void main() {
     provider = BiometricAuthProvider(
       localAuth: mockLocalAuth,
       secureStorage: mockSecureStorage,
+      lockOut: 'lockOut',
+      localizedFallbackTitle: 'localizedFallbackTitle',
+      goToSettingsDescription: 'goToSettingsDescription',
+      goToSettingsButtonText: 'goToSettingsButtonText',
+      cancelButtonText: 'cancelButtonText',
     );
   });
 
@@ -48,6 +53,7 @@ void main() {
       when(mockLocalAuth.authenticate(
         localizedReason: anyNamed('localizedReason'),
         options: anyNamed('options'),
+        authMessages: anyNamed('authMessages'),
       )).thenAnswer((_) async => true);
 
       when(mockSecureStorage.write(
@@ -61,6 +67,7 @@ void main() {
       verify(mockLocalAuth.authenticate(
         localizedReason: anyNamed('localizedReason'),
         options: anyNamed('options'),
+        authMessages: anyNamed('authMessages'),
       )).called(1);
       verify(mockSecureStorage.write(
         key: 'biometric_enabled',
@@ -74,6 +81,7 @@ void main() {
       when(mockLocalAuth.authenticate(
         localizedReason: anyNamed('localizedReason'),
         options: anyNamed('options'),
+        authMessages: anyNamed('authMessages'),
       )).thenAnswer((_) async => false);
 
       expect(
@@ -107,6 +115,7 @@ void main() {
       when(mockLocalAuth.authenticate(
         localizedReason: anyNamed('localizedReason'),
         options: anyNamed('options'),
+        authMessages: anyNamed('authMessages'),
       )).thenAnswer((_) async => true);
 
       final result = await provider.authenticate();
