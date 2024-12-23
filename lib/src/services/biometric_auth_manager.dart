@@ -1,4 +1,5 @@
 import 'package:biometric/src/exceptions/exceptions.dart';
+import 'package:biometric/src/messages/biometric_auth_messages.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:local_auth/local_auth.dart';
 
@@ -9,14 +10,31 @@ class BiometricAuthManager {
     String? reasonMessage,
     bool? biometricOnly,
     bool? stickyAuth,
+    String? lockOut,
+    String? goToSettingsButtonText,
+    String? goToSettingsDescription,
+    String? cancelButtonText,
+    String? localizedFallbackTitle,
   })  : _localAuth = localAuth ?? LocalAuthentication(),
         _secureStorage = secureStorage ?? const FlutterSecureStorage(),
         _reasonMessage = reasonMessage ?? ErrorMessages.getErrorMessage(ErrorMessages.authReasonMessage),
         _biometricOnly = biometricOnly,
+        _lockOut = lockOut,
+        _goToSettingsButtonText = goToSettingsButtonText,
+        _goToSettingsDescription = goToSettingsDescription,
+        _cancelButtonText = cancelButtonText,
+        _localizedFallbackTitle = localizedFallbackTitle,
         _stickyAuth = stickyAuth {
     _options = AuthenticationOptions(
       biometricOnly: _biometricOnly ?? false,
       stickyAuth: _stickyAuth ?? false,
+    );
+    _authMessages = BiometricAuthMessages(
+      lockOut: _lockOut,
+      goToSettingsButton: _goToSettingsButtonText,
+      goToSettingsDescription: _goToSettingsDescription,
+      cancelButton: _cancelButtonText,
+      localizedFallbackTitle: _localizedFallbackTitle,
     );
   }
 
@@ -27,6 +45,28 @@ class BiometricAuthManager {
   final bool? _stickyAuth;
   static const _biometricEnabledKey = 'biometric_enabled';
   late AuthenticationOptions _options;
+  late BiometricAuthMessages _authMessages;
+
+  /// Message advising the user to re-enable biometrics on their device.
+  final String? _lockOut;
+
+  /// Message shown on a button that the user can click to go to settings pages
+  /// from the current dialog.
+  /// Maximum 30 characters.
+  final String? _goToSettingsButtonText;
+
+  /// Message advising the user to go to the settings and configure Biometrics
+  /// for their device.
+  final String? _goToSettingsDescription;
+
+  /// Message shown on a button that the user can click to leave the current
+  /// dialog.
+  /// Maximum 30 characters.
+  final String? _cancelButtonText;
+
+  /// The localized title for the fallback button in the dialog presented to
+  /// the user during authentication.
+  final String? _localizedFallbackTitle;
 
   /// Check if the device supports biometric authentication
   Future<bool> isBiometricAvailable() async {
@@ -47,6 +87,7 @@ class BiometricAuthManager {
         throw BiometricAuthException(ErrorMessages.getErrorMessage(ErrorMessages.biometricNotAvailable));
       }
       final didAuthenticate = await _localAuth.authenticate(
+        authMessages: [_authMessages],
         localizedReason: _reasonMessage,
         options: _options,
       );
@@ -71,6 +112,7 @@ class BiometricAuthManager {
       }
 
       final didAuthenticate = await _localAuth.authenticate(
+        authMessages: [_authMessages],
         localizedReason: _reasonMessage,
         options: _options,
       );

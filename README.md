@@ -18,7 +18,7 @@ authenticating using biometrics, with proper exception handling and extensibilit
 - **Authenticate with Biometrics**: Perform secure biometric .
 - **Disable Biometric **: Remove biometric authentication settings.
 - **Error Handling**: Consistent exception management for better error reporting.
-
+- **Message Handling**: Pass corresponding messages that user see during usage.
 ---
 
 ## Directory Structure
@@ -30,9 +30,13 @@ lib/
 └── src/
     ├── exceptions/
     │   ├── error_messages.dart           # Contains error message constants.
-    │   ├── exceptions.dart               # General exception definitions.
+    │   ├── exceptions.dart               # General exception exports.
     │   └── biometric_auth_exception.dart # Custom exception for biometrics.
     │
+    ├── messages/
+    │   ├── messages.dart                 # General messages exports.
+    │   └── biometric_auth_messages.dart  # Biometric-specific messages.
+    │       
     ├── services/
     │   ├── biometric_auth_manager.dart   # Handles biometric authentication logic.
     │   └── biometric_auth_provider.dart  # High-level provider for biometric features.
@@ -42,8 +46,8 @@ lib/
 test/
 └── mocks/
     ├── mocks.dart                        # Manual mock dependencies.
-    ├── mocks.mocks.dart                  # Generated mocks via Mockito.
-    │
+    └── mocks.mocks.dart                  # Generated mocks via Mockito.
+    
 └── services/
     ├── biometric_auth_provider_test.dart # Tests for BiometricAuthProvider.
     └── biometric_auth_manager_test.dart  # Tests for BiometricAuthManager.
@@ -206,6 +210,56 @@ print('Unhandled Error: $e');
 ```
 
 Error messages are centralized in `ErrorMessages` for consistent reporting.
+
+---
+
+## Message Handling
+
+Corresponding messages which user see during usage are handling by `BiometricAuthMessages` class.
+Developer can pass parameters through `BiometricAuthProvider` class.
+
+Example:
+
+```dart
+class BiometricAuthProvider {
+  BiometricAuthProvider
+
+  (
+
+  {
+
+  ...
+
+  String? lockOut,
+  String? goToSettingsButtonText,
+  String? goToSettingsDescription,
+
+  String
+
+  ?
+
+  cancelButtonText
+
+  ,
+
+  String
+
+  ?
+
+  localizedFallbackTitle
+
+  ,
+}) {
+_biometricAuthManager = BiometricAuthManager(
+...
+cancelButtonText: cancelButtonText,
+goToSettingsButtonText: goToSettingsButtonText,
+goToSettingsDescription: goToSettingsDescription,
+localizedFallbackTitle: localizedFallbackTitle,
+lockOut: lockOut,
+);
+}
+```
 
 ---
 
