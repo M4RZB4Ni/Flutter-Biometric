@@ -2,11 +2,10 @@ import 'package:biometric/src/exceptions/exceptions.dart';
 import 'package:biometric/src/services/biometric_auth_manager.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:local_auth/local_auth.dart';
+import 'package:meta/meta.dart';
 
 class BiometricAuthProvider {
   BiometricAuthProvider({
-    LocalAuthentication? localAuth,
-    FlutterSecureStorage? secureStorage,
     String? reasonMessage,
     bool? biometricOnly,
     bool? stickyAuth,
@@ -15,18 +14,46 @@ class BiometricAuthProvider {
     String? goToSettingsDescription,
     String? cancelButtonText,
     String? localizedFallbackTitle,
+    @visibleForTesting
+    FlutterSecureStorage? secureStorage,
+    @visibleForTesting
+    LocalAuthentication? localAuth,
   }) {
     _biometricAuthManager = BiometricAuthManager(
+      /// Used when the application goes into background for any reason while the
+      /// authentication is in progress. Due to security reasons, the
+      /// authentication has to be stopped at that time. If stickyAuth is set to
+      /// true, authentication resumes when the app is resumed. If it is set to
+      /// false (default), then as soon as app is paused a failure message is sent
+      /// back to Dart and it is up to the client app to restart authentication or
+      /// do something else.
       stickyAuth: stickyAuth,
+      /// Prevent authentications from using non-biometric local authentication
+      /// such as pin, passcode, or pattern.
       biometricOnly: biometricOnly,
+      /// the message to show to user while prompting them
+      /// for authentication. If you avoid passing it, default message that is:
+      /// "You can use your Biometric to confirm making payments through this app."
+      /// shown to user.
+      reasonMessage: reasonMessage,
+      /// Message shown on a button that the user can click to leave the current
+      /// dialog.
+      /// Maximum 30 characters.
+      cancelButtonText: cancelButtonText,
+      /// Message shown on a button that the user can click to go to settings pages
+      /// from the current dialog.
+      /// Maximum 30 characters.
+      goToSettingsButtonText: goToSettingsButtonText,
+      /// Message advising the user to go to the settings and configure Biometrics
+      /// for their device.
+      goToSettingsDescription: goToSettingsDescription,
+      /// The localized title for the fallback button in the dialog presented to
+      /// the user during authentication.
+      localizedFallbackTitle: localizedFallbackTitle,
+      /// Message advising the user to re-enable biometrics on their device.
+      lockOut: lockOut,
       localAuth: localAuth,
       secureStorage: secureStorage,
-      reasonMessage: reasonMessage,
-      cancelButtonText: cancelButtonText,
-      goToSettingsButtonText: goToSettingsButtonText,
-      goToSettingsDescription: goToSettingsDescription,
-      localizedFallbackTitle: localizedFallbackTitle,
-      lockOut: lockOut,
     );
   }
 
@@ -42,7 +69,7 @@ class BiometricAuthProvider {
       }
       return isAvailable;
     } catch (e) {
-      throw BiometricAuthException('${ErrorMessages.getErrorMessage(ErrorMessages.checkAvailability)}: $e');
+      rethrow;
     }
   }
 
@@ -60,7 +87,7 @@ class BiometricAuthProvider {
       }
       return success;
     } catch (e) {
-      throw BiometricAuthException('${ErrorMessages.getErrorMessage(ErrorMessages.setupFailed)}: $e');
+      rethrow;
     }
   }
 
@@ -78,7 +105,7 @@ class BiometricAuthProvider {
       }
       return success;
     } catch (e) {
-      throw BiometricAuthException('${ErrorMessages.getErrorMessage(ErrorMessages.authFailed)}: $e');
+      rethrow;
     }
   }
 
@@ -94,7 +121,7 @@ class BiometricAuthProvider {
         return false;
       }
     } catch (e) {
-      throw BiometricAuthException('${ErrorMessages.getErrorMessage(ErrorMessages.disableFailed)}: $e');
+      rethrow;
     }
   }
 
@@ -103,7 +130,21 @@ class BiometricAuthProvider {
     try {
       return await _biometricAuthManager.isBiometricEnabled();
     } catch (e) {
-      throw BiometricAuthException('${ErrorMessages.getErrorMessage(ErrorMessages.checkEnabled)}: $e');
+      rethrow;
+    }
+  }
+
+  /// Cancels any in-progress authentication, returning true if auth was
+  /// cancelled successfully.
+  ///
+  /// This API is not supported by all platforms.
+  /// Returns false if there was some error, no authentication in progress,
+  /// or the current platform lacks support.
+  Future<bool> stopAuthentication() async {
+    try {
+      return await _biometricAuthManager.stopAuthentication();
+    } catch (e) {
+      rethrow;
     }
   }
 }

@@ -8,6 +8,7 @@ class ErrorMessages {
   static const confirmUsing = 'confirmUsing';
   static const authReasonMessage = 'authReasonMessage';
   static const biometricIsNotEnabled = 'biometricIsNotEnabled';
+  static const stopAuthenticationFailed = 'stopAuthenticationFailed';
 
   static const _errorMessages = {
     biometricNotAvailable: 'Biometric  is not supported on this device.',
@@ -18,6 +19,7 @@ class ErrorMessages {
     checkEnabled: 'Failed to check if Biometric  is enabled.',
     authReasonMessage: 'You can use your Biometric to confirm making payments through this app.',
     biometricIsNotEnabled: 'Biometric  is not enabled, please call enableBiometric() first.',
+    stopAuthenticationFailed: 'Stop Authentication failed,',
   };
 
   static String getErrorMessage(String key) {
