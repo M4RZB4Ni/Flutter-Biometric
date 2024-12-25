@@ -15,13 +15,13 @@ void main() {
     mockSecureStorage = MockFlutterSecureStorage();
 
     provider = BiometricAuthProvider(
-      localAuth: mockLocalAuth,
-      secureStorage: mockSecureStorage,
       lockOut: 'lockOut',
       localizedFallbackTitle: 'localizedFallbackTitle',
       goToSettingsDescription: 'goToSettingsDescription',
       goToSettingsButtonText: 'goToSettingsButtonText',
       cancelButtonText: 'cancelButtonText',
+      secureStorage: mockSecureStorage,
+      localAuth: mockLocalAuth,
     );
   });
 
@@ -131,6 +131,22 @@ void main() {
         throwsA(isA<BiometricAuthException>()),
       );
       verify(mockSecureStorage.read(key: 'biometric_enabled')).called(1);
+    });
+
+    test('should stop Authentication successfully', () async {
+      when(mockSecureStorage.read(key: 'biometric_enabled')).thenAnswer((_) async => 'true');
+      when(mockLocalAuth.stopAuthentication()).thenAnswer((_) async => true);
+
+      when(mockLocalAuth.authenticate(
+        localizedReason: anyNamed('localizedReason'),
+        options: anyNamed('options'),
+        authMessages: anyNamed('authMessages'),
+      )).thenAnswer((_) async => true);
+
+      provider.authenticate();
+
+      final result = await provider.stopAuthentication();
+      expect(result, true);
     });
   });
 }

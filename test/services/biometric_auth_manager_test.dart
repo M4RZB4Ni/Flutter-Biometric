@@ -88,7 +88,7 @@ void main() {
       expect(result, true);
     });
 
-    test('should throw exception if biometric  is disabled', () async {
+    test('should throw exception if biometric is disabled', () async {
       when(mockSecureStorage.read(key: 'biometric_enabled')).thenAnswer((_) async => null);
 
       expect(
@@ -97,10 +97,28 @@ void main() {
       );
     });
 
-    test('should disable biometric  successfully', () async {
+    test('should disable biometric successfully', () async {
       await biometricAuthManager.disableBiometric();
 
       verify(mockSecureStorage.delete(key: 'biometric_enabled')).called(1);
+    });
+
+    test('should stop Authentication successfully', () async {
+      when(mockSecureStorage.read(key: 'biometric_enabled')).thenAnswer((_) async => 'true');
+      when(mockLocalAuth.stopAuthentication()).thenAnswer((_) async => true);
+
+      when(mockLocalAuth.authenticate(
+        localizedReason: anyNamed('localizedReason'),
+        options: anyNamed('options'),
+        authMessages: anyNamed('authMessages'),
+      )).thenAnswer((_) async => true);
+
+      biometricAuthManager.authenticateWithBiometrics();
+      final result = await biometricAuthManager.stopAuthentication();
+      expect(
+        result,
+        true,
+      );
     });
   });
 }

@@ -5,8 +5,6 @@ import 'package:local_auth/local_auth.dart';
 
 class BiometricAuthManager {
   BiometricAuthManager({
-    LocalAuthentication? localAuth,
-    FlutterSecureStorage? secureStorage,
     String? reasonMessage,
     bool? biometricOnly,
     bool? stickyAuth,
@@ -15,10 +13,12 @@ class BiometricAuthManager {
     String? goToSettingsDescription,
     String? cancelButtonText,
     String? localizedFallbackTitle,
-  })  : _localAuth = localAuth ?? LocalAuthentication(),
-        _secureStorage = secureStorage ?? const FlutterSecureStorage(),
+    FlutterSecureStorage? secureStorage,
+    LocalAuthentication? localAuth,
+  })  : _secureStorage = secureStorage ?? const FlutterSecureStorage(),
         _reasonMessage = reasonMessage ?? ErrorMessages.getErrorMessage(ErrorMessages.authReasonMessage),
         _biometricOnly = biometricOnly,
+        _localAuth = localAuth ?? LocalAuthentication(),
         _lockOut = lockOut,
         _goToSettingsButtonText = goToSettingsButtonText,
         _goToSettingsDescription = goToSettingsDescription,
@@ -144,6 +144,16 @@ class BiometricAuthManager {
       return enabled == 'true';
     } catch (e) {
       throw BiometricAuthException('${ErrorMessages.getErrorMessage(ErrorMessages.checkEnabled)}: $e');
+    }
+  }
+
+  /// Cancels any in-progress authentication, returning true if auth was
+  /// cancelled successfully.
+  Future<bool> stopAuthentication() async {
+    try {
+      return await _localAuth.stopAuthentication();
+    } catch (e) {
+      throw BiometricAuthException('${ErrorMessages.getErrorMessage(ErrorMessages.stopAuthenticationFailed)}: $e');
     }
   }
 }

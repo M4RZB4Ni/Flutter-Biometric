@@ -14,9 +14,9 @@ authenticating using biometrics, with proper exception handling and extensibilit
 ## Features
 
 - **Check Biometric Availability**: Verify if biometrics are supported on the device.
-- **Enable Biometric **: Set up biometric authentication.
+- **Enable Biometric**: Set up biometric authentication.
 - **Authenticate with Biometrics**: Perform secure biometric .
-- **Disable Biometric **: Remove biometric authentication settings.
+- **Disable Biometric**: Remove biometric authentication settings.
 - **Error Handling**: Consistent exception management for better error reporting.
 - **Message Handling**: Pass corresponding messages that user see during usage.
 ---
@@ -222,43 +222,22 @@ Example:
 
 ```dart
 class BiometricAuthProvider {
-  BiometricAuthProvider
-
-  (
-
-  {
-
-  ...
-
+  BiometricAuthProvider({
   String? lockOut,
   String? goToSettingsButtonText,
   String? goToSettingsDescription,
-
-  String
-
-  ?
-
-  cancelButtonText
-
-  ,
-
-  String
-
-  ?
-
-  localizedFallbackTitle
-
-  ,
+  String? cancelButtonText,
+  String? localizedFallbackTitle,
 }) {
-_biometricAuthManager = BiometricAuthManager(
-...
-cancelButtonText: cancelButtonText,
-goToSettingsButtonText: goToSettingsButtonText,
-goToSettingsDescription: goToSettingsDescription,
-localizedFallbackTitle: localizedFallbackTitle,
-lockOut: lockOut,
-);
-}
+    _biometricAuthManager = BiometricAuthManager(
+
+      cancelButtonText: cancelButtonText,
+      goToSettingsButtonText: goToSettingsButtonText,
+      goToSettingsDescription: goToSettingsDescription,
+      localizedFallbackTitle: localizedFallbackTitle,
+      lockOut: lockOut,
+    );
+  }}
 ```
 
 ---
@@ -272,9 +251,7 @@ Unit tests are provided for both `BiometricAuthManager` and `BiometricAuthProvid
 
 ```dart
 test
-('should return true if biometrics are available
-'
-, () async {
+('should return true if biometrics are available', () async {
 when(mockManager.isBiometricAvailable()).thenAnswer((_) async => true);
 
 final result = await provider.isBiometricAvailable();
