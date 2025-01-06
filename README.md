@@ -271,6 +271,6 @@ flutter test
 
 ## Contact
 
-For support or questions, reach out to Amin (Head of the Mobile tech lead) or Hamid (developer).
+For support or questions, don't hesitate to contact Me through Email or LinkedIn.
 
 ---
