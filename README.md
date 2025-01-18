@@ -18,7 +18,7 @@ authenticating using biometrics, with proper exception handling and extensibilit
 - **Authenticate with Biometrics**: Perform secure biometric .
 - **Disable Biometric**: Remove biometric authentication settings.
 - **Error Handling**: Consistent exception management for better error reporting.
-- **Message Handling**: Pass corresponding messages that user see during usage.
+- **Message Handling**: Pass corresponding messages that the user sees during usage.
 ---
 
 ## Directory Structure
